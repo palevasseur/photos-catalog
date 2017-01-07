@@ -1,7 +1,9 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const router = require('./router');
+/// <reference path="../typings/index.d.ts" />
+
+import * as express from 'express'
+import * as bodyParser from 'body-parser'
+import * as cors from 'cors'
+import {router} from './router'
 
 var port = 3000;
 
