@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "../dist_server",
+    "outDir": "../server_build",
     "sourceMap": true,
     "target": "es5"
   }

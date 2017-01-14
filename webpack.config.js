@@ -1,9 +1,9 @@
 var path = require('path');
 
 module.exports = {
-    entry: path.resolve(__dirname, 'app', 'index.jsx'),
+    entry: path.resolve(__dirname, 'app', 'js', 'index.jsx'),
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'app_build'),
         filename: 'bundle.js'
     },
     module: {

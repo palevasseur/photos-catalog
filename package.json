@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "api serveur (3000)": "node ./dist_server/index.js",
-    "app build&watch": "webpack -d --watch"
+    "api:serveur": "node ./server_build/index.js",
+    "app:build&watch": "webpack -d --watch"
   },
   "author": "",
   "license": "ISC",
