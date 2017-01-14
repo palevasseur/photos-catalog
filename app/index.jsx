@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 
 const apiUrl = 'http://localhost:3000/api';
-const apiHelloUrl = apiUrl + '/helloworld';
+const apiPhotosList = apiUrl + '/photos/list';
 
 class TestMongoDB extends React.Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class TestMongoDB extends React.Component {
     render() {
         return (
             <div>
-                <h1>Test MongoDB</h1>
+                <h1>Test React</h1>
                 <button onClick={this.getList}>Get list</button>
                 <div>{this.state.listMes}</div>
                 <br/>
@@ -35,9 +35,17 @@ class TestMongoDB extends React.Component {
     }
 
     getList(e) {
-        axios.get(apiHelloUrl).then(res => {
+        axios.get(apiPhotosList).then(res => {
             console.log(res);
-            this.setState({listMes: res.data.message});
+
+            var listPieces = '';
+            res.data.photos.forEach(ref => {
+                listPieces += ref.refPiece + ', ';
+            });
+
+            this.setState({
+                listMes: listPieces
+            });
         });
     }
 

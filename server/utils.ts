@@ -1,7 +1,7 @@
 /// <reference path="../typings/index.d.ts" />
 
 export default class Utils {
-    static NumPieceNaturalSort (a, b) {
+    static numPieceNaturalSort (a, b) {
         var bAHasN = false;
         if (a.refPiece.length > 0 && (a.refPiece[0] == 'N' || a.refPiece[0] == 'n')) {
             bAHasN = true;

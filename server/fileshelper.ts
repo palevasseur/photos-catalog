@@ -5,7 +5,8 @@ import * as Promise from 'bluebird';
 import * as url from 'url';
 import Utils from "./utils";
 
-export function CreateFilesList(pathDir, cb) {
+// todo: add ts type
+export function createFilesList(pathDir, cb) {
     fs.readdir(pathDir, function (err, files) {
         if (err) throw err;
 
@@ -93,7 +94,7 @@ export function CreateFilesList(pathDir, cb) {
         }
 
         // natural sort
-        list.sort(Utils.NumPieceNaturalSort);
+        list.sort(Utils.numPieceNaturalSort);
 
         // check duplicated with photo without name
         photosWihoutNum.forEach(photoWithoutName => {
