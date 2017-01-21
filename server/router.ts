@@ -1,7 +1,7 @@
 /// <reference path="../typings/index.d.ts" />
 
 import * as express from 'express'
-import {listPhotos, statsPhotos} from './controllers/photosController'
+import {listPhotos, statsPhotos, refreshDatabase} from './controllers/photosController'
 
 export function router(app) {
     const apiRoutes = express.Router();
@@ -11,6 +11,9 @@ export function router(app) {
 
     // http://localhost:3000/api/photos/stats
     apiRoutes.get('/photos/stats', statsPhotos);
+
+    // http://localhost:3000/api/photos/refreshDatabase
+    apiRoutes.get('/photos/refreshDatabase', refreshDatabase);
 
     app.use('/api', apiRoutes);
 }

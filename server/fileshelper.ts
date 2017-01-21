@@ -11,9 +11,9 @@ export function createFilesList(pathDir, cb) {
         if (err) throw err;
 
         var stat = {
-            NbrPieces:0,
-            NbrPhotos:0,
-            NbrPhotosWihoutNum:0
+            nbrPieces:0,
+            nbrPhotos:0,
+            nbrPhotosWihoutNum:0
        };
 
         var list = [];
@@ -21,7 +21,7 @@ export function createFilesList(pathDir, cb) {
         for (var i = 0; i < files.length; i++) {
             var strExt = files[i].substring(files[i].lastIndexOf("."));
             if (strExt.toLowerCase() == ".jpg") {
-                stat.NbrPhotos++;
+                stat.nbrPhotos++;
 
                 // extract list of ref pieces for this photo
                 var ownerName = '';
@@ -31,7 +31,7 @@ export function createFilesList(pathDir, cb) {
                     piecesNumList = [];
                     piecesNumList.push("Photo sans Numéro de pièce");
                     photosWihoutNum.push(files[i]);
-                    stat.NbrPhotosWihoutNum++;
+                    stat.nbrPhotosWihoutNum++;
                 }
                 else {
                     // match "Nxxx Nyyy"
@@ -75,7 +75,7 @@ export function createFilesList(pathDir, cb) {
                         }
 
                         if(elem==null) {
-                            stat.NbrPieces++;
+                            stat.nbrPieces++;
                             elem = new Object();
                             elem.refPiece = pieceWithOwnerName;
                             elem.listPhotos = new Array();
