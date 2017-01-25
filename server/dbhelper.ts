@@ -40,6 +40,13 @@ var Photo = null;
     });
 }) ();
 
+function importPhoto(photo) {
+    let newPhoto = new Photo({fileName: photo.nomFichier});
+    newPhoto.save((err, fluffy) => {
+        if (err) return console.error(err)
+    });
+}
+
 export function refreshDB(photosList) {
     if(!Photo) {
         return;
@@ -52,20 +59,18 @@ export function refreshDB(photosList) {
         //console.log('piece:' + ref.refPiece);
         ref.listPhotos.forEach(photo => {
             Photo.find({fileName: photo.nomFichier}, (err, photosFound) => {
-                photosFound = photosFound || 0;
-
-                if(photosFound.length == 0) {
-                    console.log('=> Import new photo "' + photo.nomFichier + '"');
-                    let newPhoto = new Photo({ fileName: photo.nomFichier });
-                    newPhoto.save((err, fluffy) => {if (err) return console.error(err)});
-                }
-
-                if(photosFound.length > 1) {
-                    console.log('=> Found several instances of :' + photo.nomFichier + "\n", photosFound);
-                }
-
-                if(photosFound.length == 1) {
-                    //console.log('=> Already exist :' + photo.nomFichier);
+                photosFound = photosFound || [];
+                switch (photosFound.length) {
+                    case 0:
+                        console.log('=> Import new photo "' + photo.nomFichier + '"');
+                        importPhoto(photo);
+                        break;
+                    case 1:
+                        //console.log('=> Already exist :' + photo.nomFichier);
+                        break;
+                    default:
+                        console.log('=> Found several instances of :' + photo.nomFichier + "\n", photosFound);
+                        break;
                 }
 
             });
