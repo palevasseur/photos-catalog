@@ -1,53 +1,39 @@
-var mongoose = require('mongoose');
+import {Piece} from "./fileshelper";
+let mongoose = require('mongoose');
+// todo: let mongooseAsync: any = Promise.promisifyAll(require('mongoose'));
 
-/*
-[
-    {
-        "refPiece": "N1",
-        "listPhotos": [{"nomFichier": "N1 - 2009-12-12 101932 - IMG_0007.jpg"}]
-    },
-    {
-        "refPiece": "N2",
-        "listPhotos": [
-            {"nomFichier": "N2 - 2009-04-25 142730 - IMG_0006.jpg"},
-            {"nomFichier": "N2 - 2009-04-25 143109 - IMG_0010.jpg"}
-        ]
-    }
-]
-*/
-
-var conf = {
+let conf = {
     db: {
         cnx: "mongodb://localhost/test",
         photo: {
             modelName: "Photo",
             schema: {
-                fileName: String
+                name: String
             }
         }
     }
 };
 
-var Photo = null;
+let Photo = null;
 (function initDB() {
     mongoose.connect(conf.db.cnx);
-    var db = mongoose.connection;
+    let db = mongoose.connection;
     db.on('error', console.error.bind(console, 'mongodb connection error:'));
     db.once('open', function() {
         // create model
-        var dbSchema = mongoose.Schema(conf.db.photo.schema);
+        let dbSchema = mongoose.Schema(conf.db.photo.schema);
         Photo = mongoose.model(conf.db.photo.modelName, dbSchema);
     });
 }) ();
 
-function importPhoto(photo) {
-    let newPhoto = new Photo({fileName: photo.nomFichier});
+function importPhoto(photoName: string) : void {
+    let newPhoto = new Photo({name: photoName});
     newPhoto.save((err, fluffy) => {
         if (err) return console.error(err)
     });
 }
 
-export function refreshDB(photosList) {
+export function refreshDB(photosList: Piece[]) : void {
     if(!Photo) {
         return;
     }
@@ -57,19 +43,19 @@ export function refreshDB(photosList) {
     // create photos
     photosList.forEach(ref => {
         //console.log('piece:' + ref.refPiece);
-        ref.listPhotos.forEach(photo => {
-            Photo.find({fileName: photo.nomFichier}, (err, photosFound) => {
+        ref.photoNames.forEach(photoName => {
+            Photo.find({name: photoName}, (err, photosFound) => {
                 photosFound = photosFound || [];
                 switch (photosFound.length) {
                     case 0:
-                        console.log('=> Import new photo "' + photo.nomFichier + '"');
-                        importPhoto(photo);
+                        console.log('=> Import new photo "' + photoName + '"');
+                        importPhoto(photoName);
                         break;
                     case 1:
                         //console.log('=> Already exist :' + photo.nomFichier);
                         break;
                     default:
-                        console.log('=> Found several instances of :' + photo.nomFichier + "\n", photosFound);
+                        console.log('=> Found several instances of :' + photoName + "\n", photosFound);
                         break;
                 }
 

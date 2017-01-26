@@ -7,28 +7,48 @@ import Utils from "./utils";
 
 let fsAsync: any = Promise.promisifyAll(fs);
 
-// todo: add ts type
-export function createFilesList(pathDir): Promise<any> {
-    return new Promise((resolve, reject) => {
+export interface Photo {
+    name: string;
+    imgB64: string;
+}
+
+export interface PhotoStats {
+    nbrPieces: number;
+    nbrPhotos: number;
+    nbrPhotosWihoutNum: number;
+}
+
+export interface Piece {
+    refPiece: string;
+    photoNames: string[];
+}
+
+export interface FilesStats {
+    pieces: Piece[];
+    stats: PhotoStats;
+}
+
+export function createFilesList(pathDir): Promise<FilesStats> {
+    return new Promise<FilesStats>((resolve, reject) => {
         fsAsync.readdirAsync(pathDir)
             .then(files => {
-                var stat = {
+                let stat: PhotoStats = {
                     nbrPieces: 0,
                     nbrPhotos: 0,
                     nbrPhotosWihoutNum: 0
                 };
 
-                var list = [];
-                var photosWihoutNum = [];
-                for (var i = 0; i < files.length; i++) {
-                    var strExt = files[i].substring(files[i].lastIndexOf("."));
+                let list: Piece[] = [];
+                let photosWihoutNum = [];
+                for (let i = 0; i < files.length; i++) {
+                    let strExt = files[i].substring(files[i].lastIndexOf("."));
                     if (strExt.toLowerCase() == ".jpg") {
                         stat.nbrPhotos++;
 
                         // extract list of ref pieces for this photo
-                        var ownerName = '';
-                        var piecesNum = ((files[i]).split('- ', 1)).toString().trim();
-                        var piecesNumList = null;
+                        let ownerName = '';
+                        let piecesNum = ((files[i]).split('- ', 1)).toString().trim();
+                        let piecesNumList = null;
                         if (piecesNum.length == 0) {
                             piecesNumList = [];
                             piecesNumList.push("Photo sans Numéro de pièce");
@@ -58,7 +78,7 @@ export function createFilesList(pathDir): Promise<any> {
                         piecesNumList.forEach(piece => {
                             // check not empty because of .split(' ') can generate empty
                             if (piece.length > 0) {
-                                var pieceWithOwnerName = '';
+                                let pieceWithOwnerName = '';
                                 if (ownerName) {
                                     pieceWithOwnerName = ownerName + ' ' + piece;
                                 }
@@ -67,8 +87,8 @@ export function createFilesList(pathDir): Promise<any> {
                                 }
 
                                 // find if elem already exist
-                                var elem: any = null;
-                                for (var j = 0; j < list.length; j++) {
+                                let elem: any = null;
+                                for (let j = 0; j < list.length; j++) {
                                     if (list[j].refPiece == pieceWithOwnerName) {
                                         elem = list[j];
                                         break;
@@ -77,15 +97,14 @@ export function createFilesList(pathDir): Promise<any> {
 
                                 if (elem == null) {
                                     stat.nbrPieces++;
-                                    elem = new Object();
-                                    elem.refPiece = pieceWithOwnerName;
-                                    elem.listPhotos = new Array();
+                                    elem = {
+                                        refPiece: pieceWithOwnerName,
+                                        photoNames: []
+                                    };
                                     list.push(elem);
                                 }
 
-                                var elemPhoto: any = new Object();
-                                elemPhoto.nomFichier = files[i];
-                                elem.listPhotos.push(elemPhoto);
+                                elem.photoNames.push(files[i]);
                             }
                         });
                     }
@@ -107,16 +126,16 @@ export function createFilesList(pathDir): Promise<any> {
                 });
 
                 resolve({
-                    list:list,
-                    stat:stat
+                    pieces:list,
+                    stats:stat
                 });
             });
     });
 }
 
-export function updateWithDataPhoto(pathDir, list) : Promise<any> {
+export function updateWithDataPhoto(pathDir: string, list: FilesStats) : Promise<FilesStats> {
     // todo
-    return new Promise((resolve, reject) => {
+    return new Promise<FilesStats>((resolve, reject) => {
         resolve(list);
     });
 }

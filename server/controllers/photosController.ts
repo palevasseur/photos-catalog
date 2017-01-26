@@ -1,4 +1,4 @@
-import {createFilesList, updateWithDataPhoto} from '../fileshelper'
+import {createFilesList, updateWithDataPhoto, FilesStats} from '../fileshelper'
 import {refreshDB} from '../dbhelper'
 import {config} from '../config'
 
@@ -15,7 +15,7 @@ export function statsPhotos(req, res, next) {
     // todo: add config managment for end point url
     createFilesList(config().photosDirectory)
         .then(ls => {
-            res.status(200).json(ls.stat);
+            res.status(200).json(ls.stats);
         });
 }
 
@@ -23,7 +23,7 @@ export function refreshDatabase(req, res, next) {
     createFilesList(config().photosDirectory)
         .then(ls => updateWithDataPhoto(config().photosDirectory, ls))
         .then(ls => {
-            refreshDB(ls.list);
+            refreshDB(ls.pieces);
             res.status(200).json({
                 status: 'ok'
             });
